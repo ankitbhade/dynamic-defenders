@@ -71,7 +71,7 @@ class Enemy:
     def get_rect(self):
         return pygame.Rect(self.x - ENEMY_SIZE, self.y - ENEMY_SIZE, ENEMY_SIZE * 2, ENEMY_SIZE * 2)
 
-
+# Begin AI Generated
 class EnemyManager:
     def __init__(self):
         self.enemies = []
@@ -82,7 +82,6 @@ class EnemyManager:
         self.player_pos = (SCREEN_WIDTH // 2, SCREEN_HEIGHT - 100)
     
     def set_player_pos(self, x, y):
-        """Update player position for enemy targeting"""
         self.player_pos = (x, y)
     
     def update(self, dt):
@@ -125,7 +124,6 @@ class EnemyManager:
             enemy.draw(screen)
     
     def check_collisions(self, projectiles, player_rect):
-        """Check collisions with projectiles and player"""
         kills = 0
         player_hit = False
         
@@ -148,9 +146,9 @@ class EnemyManager:
                 break
         
         return kills, player_hit
+# End AI Generated
     
     def apply_dda(self, player_lives):
-        """Simple DDA: adjust spawn rate based on lives"""
         # Only adjust every DDA_CHECK_INTERVAL waves
         if self.wave_count % DDA_CHECK_INTERVAL == 0 and self.wave_count > 0:
             if player_lives == 1:

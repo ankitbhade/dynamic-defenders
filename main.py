@@ -46,7 +46,7 @@ while running:
         player.handle_input(keys, mouse_pos, mouse_pressed)
         player.update()
         
-        # Update enemy manager with player position and delta time
+        # Update enemy manager
         enemy_manager.set_player_pos(player.x, player.y)
         enemy_manager.update(dt)
         

@@ -54,6 +54,7 @@ class Player:
         if mouse_pressed[0]:
             self.shoot()
     
+    # Begin AI Generated
     def shoot(self):
         current_time = pygame.time.get_ticks()
         if current_time - self.last_shot_time > FIRE_COOLDOWN:
@@ -92,6 +93,7 @@ class Player:
     
     def get_rect(self):
         return pygame.Rect(self.x - PLAYER_SIZE, self.y - PLAYER_SIZE, PLAYER_SIZE * 2, PLAYER_SIZE * 2)
+    # End AI Generated
     
     def take_damage(self):
         self.lives -= 1
