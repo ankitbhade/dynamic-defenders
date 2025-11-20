@@ -148,17 +148,30 @@ class EnemyManager:
         return kills, player_hit
 # End AI Generated
     
-    def apply_dda(self, player_lives):
-        # Only adjust every DDA_CHECK_INTERVAL waves
-        if self.wave_count % DDA_CHECK_INTERVAL == 0 and self.wave_count > 0:
-            if player_lives == 1:
-                # Player struggling - make easier (spawn slower)
-                self.spawn_rate = min(3000, self.spawn_rate + 200)
-                print(f"DDA: Lives={player_lives}, Making easier! Spawn rate: {self.spawn_rate}ms")
-            elif player_lives == 3:
-                # Player doing well - make harder (spawn faster)
-                self.spawn_rate = max(400, self.spawn_rate - 200)  # Changed from 800 to 300
-                print(f"DDA: Lives={player_lives}, Making harder! Spawn rate: {self.spawn_rate}ms")
-            else:
-                # Lives = 2, keep it balanced
-                print(f"DDA: Lives={player_lives}, Keeping balanced. Spawn rate: {self.spawn_rate}ms")
+    def apply_dda(self, player_lives, survival_time, score_rate):
+        x = 2.0  # lives weight
+        y = 1.0  # survival time weight
+        z = 0.5  # score rate weight
+
+        effective_time = math.log(survival_time + 1)
+
+        if player_lives == 1:
+            player_lives *= -1
+
+        performance = (player_lives * x) + (effective_time * y) + (score_rate * z)
+
+        print(f"DDA: lives={player_lives}, time={survival_time:.1f}, "f"rate={score_rate:.2f}, perf={performance:.1f}")
+
+        EASY_THRESHOLD = 4
+        HARD_THRESHOLD = 8
+
+        if performance < EASY_THRESHOLD:
+            # Player struggling
+            self.spawn_rate = min(3000, self.spawn_rate + 200)
+            print(f"Making easier: {self.spawn_rate}")
+        elif performance > HARD_THRESHOLD:
+            # Player doing well
+            self.spawn_rate = max(400, self.spawn_rate - 200)
+            print(f"Making harder: {self.spawn_rate}")
+        else:
+            print("Keeping balanced")

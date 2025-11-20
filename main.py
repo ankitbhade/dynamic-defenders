@@ -16,6 +16,7 @@ enemy_manager = EnemyManager()
 
 font = pygame.font.Font(None, 36)
 game_over = False
+start_time = pygame.time.get_ticks()
 
 # Track last DDA check
 last_dda_wave = 0
@@ -38,6 +39,12 @@ while running:
                 last_dda_wave = 0
     
     if not game_over:
+        current_survival_time = (pygame.time.get_ticks() - start_time) / 1000
+        if current_survival_time > 0:
+            score_rate = player.score / current_survival_time
+        else:
+            score_rate = 0
+
         # Input and update
         keys = pygame.key.get_pressed()
         mouse_pos = pygame.mouse.get_pos()
@@ -60,7 +67,7 @@ while running:
         
         # Apply DDA every DDA_CHECK_INTERVAL waves
         if enemy_manager.wave_count > last_dda_wave and enemy_manager.wave_count % DDA_CHECK_INTERVAL == 0:
-            enemy_manager.apply_dda(player.lives)
+            enemy_manager.apply_dda(player.lives, current_survival_time, score_rate)
             last_dda_wave = enemy_manager.wave_count
     
     # Draw
@@ -74,9 +81,11 @@ while running:
         score_text = font.render(f'Score: {player.score}', True, WHITE)
         wave_text = font.render(f'Wave: {enemy_manager.wave_count}', True, WHITE)
         spawn_text = font.render(f'Spawn Rate: {enemy_manager.spawn_rate/1000}s', True, YELLOW)
+        time_text = font.render(f'Time: {current_survival_time:.1f}s', True, WHITE)
         
         screen.blit(lives_text, (10, 10))
         screen.blit(score_text, (10, 50))
+        screen.blit(time_text, (10, 90))
         screen.blit(wave_text, (SCREEN_WIDTH - 150, 10))
         screen.blit(spawn_text, (SCREEN_WIDTH - 300, 50))
         
