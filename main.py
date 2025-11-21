@@ -58,7 +58,12 @@ while running:
         enemy_manager.update(dt)
         
         # Check collisions
-        kills, player_hit = enemy_manager.check_collisions(player.projectiles, player.get_rect())
+        kills, player_hit, powerup = enemy_manager.check_collisions(player.projectiles, player.get_rect())
+
+        if powerup and player.lives < 3:
+            player.lives += 1
+            print("Player healed! Lives =", player.lives)
+
         player.score += kills * 10
         
         if player_hit:
