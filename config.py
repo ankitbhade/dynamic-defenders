@@ -28,7 +28,7 @@ FIRE_COOLDOWN = 250
 # Enemy settings
 ENEMY_SIZE = 20
 ENEMY_SPEED = 2
-INITIAL_SPAWN_RATE = 1600
+INITIAL_SPAWN_RATE = 2000
 
 # DDA settings
 DDA_CHECK_INTERVAL = 1  # Check lives every wave

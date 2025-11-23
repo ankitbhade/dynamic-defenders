@@ -24,6 +24,7 @@ start_time = pygame.time.get_ticks()
 # Track last DDA check
 last_dda_wave = 0
 dt = 0
+final_survival_time = 0
 
 # Projectile boost tracking
 projectile_boost_active = False
@@ -122,6 +123,7 @@ while running:
         
         if player_hit:
             if player.take_damage():
+                final_survival_time = (pygame.time.get_ticks() - start_time) / 1000
                 game_state = "game_over"
         
         # Apply DDA
@@ -190,7 +192,7 @@ while running:
     elif game_state == "game_over":
         player.draw(screen)
         enemy_manager.draw(screen)
-        current_survival_time = (pygame.time.get_ticks() - start_time) / 1000
+        current_survival_time = final_survival_time
         # Game Over screen with arcade style
         # Title
         draw_ui_with_outline(screen, 'GAME OVER', large_font, SCREEN_WIDTH // 2 - 200, SCREEN_HEIGHT // 2 - 100, RED)
@@ -202,7 +204,7 @@ while running:
         wave_final_text = f'Waves Survived: {enemy_manager.wave_count}'
         draw_ui_with_outline(screen, wave_final_text, font, SCREEN_WIDTH // 2 - 140, SCREEN_HEIGHT // 2 + 40, CYAN)
         
-        time_final_text = f'Time: {current_survival_time:.1f}s'
+        time_final_text = f'Time: {final_survival_time:.1f}s'
         draw_ui_with_outline(screen, time_final_text, font, SCREEN_WIDTH // 2 - 80, SCREEN_HEIGHT // 2 + 80, WHITE)
         
         # Restart instruction (pulsing)
