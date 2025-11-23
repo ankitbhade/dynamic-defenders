@@ -17,7 +17,8 @@ enemy_manager = EnemyManager()
 font = pygame.font.Font(None, 36)
 small_font = pygame.font.Font(None, 24)
 large_font = pygame.font.Font(None, 72)
-game_over = False
+title_font = pygame.font.Font(None, 96)
+game_state = "start"
 start_time = pygame.time.get_ticks()
 
 # Track last DDA check
@@ -74,17 +75,21 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         if event.type == pygame.KEYDOWN:
-            if game_over and event.key == pygame.K_r:
-                # Restart
+            if game_state == "start" and event.key == pygame.K_SPACE:
+                # start
+                game_state = "playing"
+                start_time = pygame.time.get_ticks()
+            elif game_state == "game_over" and event.key == pygame.K_r:
+                # restart
                 player = Player(SCREEN_WIDTH // 2, SCREEN_HEIGHT - 100)
                 enemy_manager = EnemyManager()
-                game_over = False
+                game_state = "playing"
                 last_dda_wave = 0
                 projectile_boost_active = False
                 projectile_boost_end_time = 0
                 start_time = pygame.time.get_ticks()
     
-    if not game_over:
+    if game_state == "playing":
         current_survival_time = (pygame.time.get_ticks() - start_time) / 1000
         if current_survival_time > 0:
             score_rate = player.score / current_survival_time
@@ -117,7 +122,7 @@ while running:
         
         if player_hit:
             if player.take_damage():
-                game_over = True
+                game_state = "game_over"
         
         # Apply DDA
         if enemy_manager.wave_count > last_dda_wave and enemy_manager.wave_count % DDA_CHECK_INTERVAL == 0:
@@ -134,11 +139,23 @@ while running:
     screen.fill(SPACE_BLACK)
     draw_background(screen, dt)
     
-    player.draw(screen)
-    enemy_manager.draw(screen)
+    if game_state == "start":
+        # START SCREEN
+        draw_ui_with_outline(screen, 'DYNAMIC DEFENDERS', title_font, SCREEN_WIDTH // 2 - 370, 150, (255, 100, 200))
+        
+        subtitle = 'Survive waves of enemies!'
+        draw_ui_with_outline(screen, subtitle, font, SCREEN_WIDTH // 2 - 150, 250, YELLOW)
+        
+        pulse = abs(math.sin(pygame.time.get_ticks() * 0.003))
+        start_color = (int(255 * pulse), int(255 * pulse), int(255 * pulse))
+        draw_ui_with_outline(screen, 'Press SPACE to Start', font, SCREEN_WIDTH // 2 - 120, 500, start_color)
     
-    # UI
-    if not game_over:
+    elif game_state == "playing":
+        player.draw(screen)
+        enemy_manager.draw(screen)
+        
+        current_survival_time = (pygame.time.get_ticks() - start_time) / 1000
+    
         # Lives (left side)
         lives_text = f'Lives: {player.lives}'
         draw_ui_with_outline(screen, lives_text, font, 10, 10, RED)
@@ -158,7 +175,7 @@ while running:
         # Spawn rate indicator
         spawn_text = f'Spawn (s): {enemy_manager.spawn_rate/1000:.1f}s'
         draw_ui_with_outline(screen, spawn_text, font, SCREEN_WIDTH - 200, 50, YELLOW)
-        
+    
         # Begin AI Generated
         # Show boost status with pulsing effect
         if projectile_boost_active:
@@ -169,7 +186,11 @@ while running:
         
         instructions = 'WASD: Move | Mouse: Aim | Left Click: Shoot'
         draw_ui_with_outline(screen, instructions, small_font, SCREEN_WIDTH // 2 - 140, SCREEN_HEIGHT - 30, WHITE)
-    else:
+
+    elif game_state == "game_over":
+        player.draw(screen)
+        enemy_manager.draw(screen)
+        current_survival_time = (pygame.time.get_ticks() - start_time) / 1000
         # Game Over screen with arcade style
         # Title
         draw_ui_with_outline(screen, 'GAME OVER', large_font, SCREEN_WIDTH // 2 - 200, SCREEN_HEIGHT // 2 - 100, RED)
