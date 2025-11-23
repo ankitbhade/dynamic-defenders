@@ -337,14 +337,13 @@ class EnemyManager:
         EASY_THRESHOLD = 4
         HARD_THRESHOLD = 7
 
-        # if performance < EASY_THRESHOLD:
-        #     self.spawn_rate = min(3000, self.spawn_rate + 200)
-        #     self.enemy_speed_factor = max(0.7, self.enemy_speed_factor - 0.05)
-        #     print(f"Easier: spawn={self.spawn_rate}, speed_factor={self.enemy_speed_factor:.2f}")
-        # elif performance > HARD_THRESHOLD:
-        #     self.spawn_rate = max(400, self.spawn_rate - 200)
-        #     self.enemy_speed_factor = min(2.0, self.enemy_speed_factor + 0.05)
-        #     print(f"Harder: spawn={self.spawn_rate}, speed_factor={self.enemy_speed_factor:.2f}")
-        # else:
-        #     print("Keeping balanced")
-        print(f"No DDA Applied: spawn={self.spawn_rate}, speed_factor={self.enemy_speed_factor:.2f}")
+        if performance < EASY_THRESHOLD:
+            self.spawn_rate = min(3000, self.spawn_rate + 200)
+            self.enemy_speed_factor = max(0.7, self.enemy_speed_factor - 0.05)
+            print(f"Easier: spawn={self.spawn_rate}, speed_factor={self.enemy_speed_factor:.2f}")
+        elif performance > HARD_THRESHOLD:
+            self.spawn_rate = max(400, self.spawn_rate - 200)
+            self.enemy_speed_factor = min(2.0, self.enemy_speed_factor + 0.05)
+            print(f"Harder: spawn={self.spawn_rate}, speed_factor={self.enemy_speed_factor:.2f}")
+        else:
+            print("Keeping balanced")
