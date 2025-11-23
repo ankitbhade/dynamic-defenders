@@ -334,8 +334,8 @@ class EnemyManager:
 
         print(f"DDA: lives={player_lives}, time={survival_time:.1f}, "f"rate={score_rate:.2f}, perf={performance:.1f}")
 
-        EASY_THRESHOLD = 4
-        HARD_THRESHOLD = 7
+        EASY_THRESHOLD = 7
+        HARD_THRESHOLD = 10
 
         if performance < EASY_THRESHOLD:
             self.spawn_rate = min(3000, self.spawn_rate + 200)
